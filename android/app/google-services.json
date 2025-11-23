@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "640237132976",
+    "project_id": "singspeaktech",
+    "storage_bucket": "singspeaktech.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:640237132976:android:00a9d49902b3cd633cef75",
+        "android_client_info": {
+          "package_name": "com.example.sing_speak_tech"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDkbqs2zgab21Cr2t_J9EEQlCVQ1d8qwWw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
