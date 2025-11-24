@@ -7,12 +7,25 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:640237132976:android:00a9d49902b3cd633cef75",
+        "mobilesdk_app_id": "1:640237132976:android:c156aae432e4bd013cef75",
         "android_client_info": {
           "package_name": "com.example.sing_speak_tech"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "640237132976-aosufii07c2em2i0rpvj36kj1bcoq9mf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.sing_speak_tech",
+            "certificate_hash": "8c48cf0598facc3ef9db595331e2dd1ced39a093"
+          }
+        },
+        {
+          "client_id": "640237132976-9rkj5s8oc0pb42j6sh7qi2j3j7o2pp55.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDkbqs2zgab21Cr2t_J9EEQlCVQ1d8qwWw"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "640237132976-9rkj5s8oc0pb42j6sh7qi2j3j7o2pp55.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "640237132976-iia3pu36l9ntvrlrp24iu2gp2bppvor3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.tomas.singspeaktech"
+              }
+            }
+          ]
         }
       }
     }

@@ -16,13 +16,33 @@ class HomePage extends StatelessWidget {
             icon: const Icon(Icons.logout),
             onPressed: () async {
               await FirebaseAuth.instance.signOut();
-              Navigator.pushReplacementNamed(context, '/');
+              Navigator.pushReplacementNamed(context, '/login'); 
             },
           )
         ],
       ),
       body: Center(
-        child: Text('Hola, ${user?.email ?? "sin email"}'),
+        child: user == null
+            ? const Text("Usuario no autenticado") 
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Bienvenido, ${user.displayName}",
+                    style: const TextStyle(fontSize: 20),
+                  ),
+                  const SizedBox(height: 20),
+                  CircleAvatar(
+                    radius: 40,
+                    backgroundImage: NetworkImage(user.photoURL ?? ""),
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    user.email ?? "Sin correo",
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ],
+              ),
       ),
     );
   }

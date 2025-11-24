@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:sing_speak_tech/auth/google_signin_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -60,53 +61,59 @@ class _LoginPageState extends State<LoginPage> {
         padding: const EdgeInsets.all(30),
         child: Center(
           child: SingleChildScrollView(
+            
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text(
-                  "SingSpeak Tech",
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  "SingSpeak",
+                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(height: 10),
                 TextField(
                   controller: emailCtrl,
                   keyboardType: TextInputType.emailAddress,
-                  decoration: const InputDecoration(
-                    labelText: "Email",
-                  ),
+                  decoration: const InputDecoration(labelText: "Email"),
                 ),
                 const SizedBox(height: 10),
                 TextField(
                   controller: passCtrl,
                   obscureText: true,
-                  decoration: const InputDecoration(
-                    labelText: "Password",
-                  ),
+                  decoration: const InputDecoration(labelText: "Password"),
                 ),
                 const SizedBox(height: 20),
                 if (error != null)
-                  Text(
-                    error!,
-                    style: const TextStyle(color: Colors.red),
-                  ),
+                  Text(error!, style: const TextStyle(color: Colors.red)),
                 const SizedBox(height: 20),
                 loading
                     ? const CircularProgressIndicator()
                     : Column(
-                        children: [
-                          ElevatedButton(
-                            onPressed: login,
-                            child: const Text("Iniciar sesión"),
+                      children: [
+                        Center(
+                          child: Row(
+                            children: [
+                              ElevatedButton(
+                                onPressed: login,
+                                child: const Text("Iniciar sesión"),
+                              ),
+                              TextButton(
+                                onPressed: register,
+                                child: const Text("Crear cuenta"),
+                              ),
+                            ],
                           ),
-                          TextButton(
-                            onPressed: register,
-                            child: const Text("Crear cuenta"),
-                          ),
-                        ],
-                      ),
+                        ),
+                        ElevatedButton(
+                          onPressed: () async {
+                            final user =
+                                await GoogleSignInService.signInWithGoogle();
+                            if (user != null) {
+                              Navigator.pushReplacementNamed(context, "/home");
+                            }
+                          },
+                          child: const Text("Continuar con Google"),
+                        ),
+                      ],
+                    ),
               ],
             ),
           ),
