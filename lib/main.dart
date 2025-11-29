@@ -19,7 +19,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("USER LOGIN $user");
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,

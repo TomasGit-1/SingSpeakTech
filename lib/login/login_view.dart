@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:sing_speak_tech/auth/google_signin_service.dart';
 
 class LoginPage extends StatefulWidget {
@@ -38,161 +39,185 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF2C9),
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 30),
-          child: Column(
-            children: [
-              const Text(
-                "SingSpeakTech",
-                style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF7A36B0), // Morado
-                ),
-              ),
+      body: Stack(
+        children: [
+          // FONDO SVG
+          SvgPicture.asset(
+            'assets/login/opcion1.svg',
+            width: double.infinity,
+            height: double.infinity,
+            fit: BoxFit.cover,
+          ),
 
-              const SizedBox(height: 20),
-
-              Image.asset(
-                "assets/logo.png",
-                height: 160,
-              ),
-
-              const SizedBox(height: 25),
-
-              // EMAIL FIELD
-              TextField(
-                controller: emailCtrl,
-                decoration: InputDecoration(
-                  labelText: "Email",
-                  filled: true,
-                  fillColor: Colors.white,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 18),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 15),
-
-              // PASSWORD FIELD
-              TextField(
-                controller: passCtrl,
-                obscureText: true,
-                decoration: InputDecoration(
-                  labelText: "Password",
-                  filled: true,
-                  fillColor: Colors.white,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 18),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 15),
-
-              Text(
-                "Forgot password?",
-                style: TextStyle(
-                  color: Colors.grey[800],
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-
-              const SizedBox(height: 20),
-
-              if (error != null)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: Text(
-                    error!,
-                    style: const TextStyle(color: Colors.red),
-                  ),
-                ),
-
-              loading
-                  ? const CircularProgressIndicator()
-                  : Column(
-                      children: [
-                        // BOTÓN INICIAR SESIÓN
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: login,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFFFF4FA5),
-                              elevation: 0,
-                              padding: const EdgeInsets.symmetric(vertical: 18),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18),
-                              ),
-                              foregroundColor: Colors.white,
-                              textStyle: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            child: const Text("Iniciar sesión"),
-                          ),
-                        ),
-
-                        const SizedBox(height: 12),
-
-                        // BOTÓN GOOGLE
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: () async {
-                              final user =
-                                  await GoogleSignInService.signInWithGoogle();
-                              if (user != null) {
-                                Navigator.pushReplacementNamed(context, "/home");
-                              }
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              elevation: 1,
-                              shadowColor: Colors.black12,
-                              padding: const EdgeInsets.symmetric(vertical: 14),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(14),
-                              ),
-                              foregroundColor: const Color(0xFF3D3D3D),
-                              textStyle: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.asset(
-                                  "assets/GoogleIcon.png",
-                                  height: 22,
-                                ),
-                                const SizedBox(width: 12),
-                                const Text("Continuar con Google"),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30),
+              child: Column(
+                children: [
+                  // ---------- LOGO ARRIBA ----------
+                  const SizedBox(height: 20),
+                  const Text(
+                    "Aprende LSM fácilmente",
+                    style: TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
                     ),
-            ],
+                  ),
+
+                  const SizedBox(height: 10),
+                  Image.asset("assets/mano3d.png", height: 180),
+
+                  // ---------- EMPUJAR TODO HACIA ABAJO ----------
+                  const Spacer(),
+
+                  // ---------- TEXTFIELDS ----------
+                  TextFieldDesign(
+                    controller: emailCtrl,
+                    hint: "Correo electrónico",
+                    icon: Icons.mail_outline,
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  TextFieldDesign(
+                    controller: passCtrl,
+                    hint: "Contraseña",
+                    icon: Icons.lock_outline,
+                    obscure: true,
+                  ),
+
+                  const SizedBox(height: 14),
+
+                  Text(
+                    "¿Olvidaste tu contraseña?",
+                    style: TextStyle(
+                      color: const Color(0xFFE6E8EA),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+
+                  const SizedBox(height: 18),
+
+                  // ---------- ERROR ----------
+                  if (error != null)
+                    Text(error!, style: const TextStyle(color: Colors.red)),
+
+                  const SizedBox(height: 10),
+
+                  // ---------- BOTÓN LOGIN ----------
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: login,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFF98A76),
+                        padding: const EdgeInsets.symmetric(vertical: 18),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18),
+                        ),
+                        foregroundColor: const Color(0xFF02121F),
+                        textStyle: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      child: const Text("Iniciar sesión"),
+                    ),
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  // ---------- BOTÓN GOOGLE ----------
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        final user =
+                            await GoogleSignInService.signInWithGoogle();
+                        if (user != null) {
+                          Navigator.pushReplacementNamed(context, "/home");
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(100),
+                        ),
+                        foregroundColor: const Color(0xFF3D3D3D),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset("assets/GoogleIcon.png", height: 32),
+                          const SizedBox(width: 10),
+                          const Text("Continuar con Google"),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 40), // MARGEN FINAL
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class TextFieldDesign extends StatelessWidget {
+  const TextFieldDesign({
+    super.key,
+    required this.controller,
+    required this.hint,
+    required this.icon,
+    this.obscure = false,
+  });
+
+  final TextEditingController controller;
+  final String hint;
+  final IconData icon;
+  final bool obscure;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFF0D1B2A), // Fondo oscuro EXACTO
+        borderRadius: BorderRadius.circular(28), // Bordes súper redondeados
+      ),
+      child: TextField(
+        controller: controller,
+        obscureText: obscure,
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 17,
+          fontWeight: FontWeight.w400,
+        ),
+        decoration: InputDecoration(
+          prefixIcon: Padding(
+            padding: const EdgeInsets.only(left: 12, right: 10),
+            child: Icon(
+              icon, // Ícono dinámico
+              size: 28,
+              color: Colors.white,
+            ),
+          ),
+
+          hintText: hint, // Texto dinámico
+          hintStyle: const TextStyle(color: Colors.white70, fontSize: 17),
+
+          border: InputBorder.none,
+          focusedBorder: InputBorder.none,
+          enabledBorder: InputBorder.none,
+
+          contentPadding: const EdgeInsets.symmetric(
+            vertical: 20,
+            horizontal: 0,
           ),
         ),
       ),

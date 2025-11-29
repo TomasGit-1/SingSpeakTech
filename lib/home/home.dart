@@ -49,8 +49,8 @@ class _HomePageState extends State<HomePage> {
       },
     );
 
-    await _checkIfDownloaded(); // actualiza el flag
-
+    await _checkIfDownloaded(); 
+    
     setState(() {
       isDownloading = false;
     });
@@ -77,7 +77,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text("Home"),
@@ -125,26 +124,10 @@ class _HomePageState extends State<HomePage> {
               "${((current / total) * 100).clamp(0.0, 100).toStringAsFixed(0)}%",
               style: const TextStyle(fontSize: 16),
             ),
-          ],
+            const SizedBox(height:30)
+            ],
         ],
       ),
-      // Center(
-      //     child: Column(
-      //       mainAxisAlignment: MainAxisAlignment.center,
-      //       children: [
-      //         Text("Bienvenido, ${user?.displayName}"),
-      //         Text(user?.email ?? ""),
-      //         const SizedBox(height: 40),
-
-      //         if (!isDownloading)
-      //           ElevatedButton(
-      //             onPressed: _startDownload,
-      //             child: const Text("Descargar contenido"),
-      //           ),
-
-      // ],
-      //     ),
-      //   ),
     );
   }
 }
