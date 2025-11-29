@@ -55,7 +55,7 @@ class _LoginPageState extends State<LoginPage> {
               child: Column(
                 children: [
                   // ---------- LOGO ARRIBA ----------
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 100),
                   const Text(
                     "Aprende LSM fácilmente",
                     style: TextStyle(
