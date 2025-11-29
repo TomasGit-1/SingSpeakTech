@@ -42,17 +42,17 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyCRZUCWDC1rOZv6jK9gN0yu2Ig3GfmFTzs',
-    appId: '1:640237132976:web:73da6ce2009ab6893cef75',
+    appId: '1:640237132976:web:3847aa1886269a693cef75',
     messagingSenderId: '640237132976',
     projectId: 'singspeaktech',
     authDomain: 'singspeaktech.firebaseapp.com',
     storageBucket: 'singspeaktech.firebasestorage.app',
-    measurementId: 'G-4CD5N4E46K',
+    measurementId: 'G-094DP0C9RM',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyDkbqs2zgab21Cr2t_J9EEQlCVQ1d8qwWw',
-    appId: '1:640237132976:android:00a9d49902b3cd633cef75',
+    appId: '1:640237132976:android:c156aae432e4bd013cef75',
     messagingSenderId: '640237132976',
     projectId: 'singspeaktech',
     storageBucket: 'singspeaktech.firebasestorage.app',
@@ -60,29 +60,34 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyCyssmU02JLX8yJe5vsJBMVFu8S4mkZTVw',
-    appId: '1:640237132976:ios:7b82069496f3afc83cef75',
+    appId: '1:640237132976:ios:203bdd7342bc29a83cef75',
     messagingSenderId: '640237132976',
     projectId: 'singspeaktech',
     storageBucket: 'singspeaktech.firebasestorage.app',
+    androidClientId: '640237132976-aosufii07c2em2i0rpvj36kj1bcoq9mf.apps.googleusercontent.com',
+    iosClientId: '640237132976-sckd44re7j1anabsdi65781m2vnucjb1.apps.googleusercontent.com',
     iosBundleId: 'com.example.singSpeakTech',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyCyssmU02JLX8yJe5vsJBMVFu8S4mkZTVw',
-    appId: '1:640237132976:ios:7b82069496f3afc83cef75',
+    appId: '1:640237132976:ios:203bdd7342bc29a83cef75',
     messagingSenderId: '640237132976',
     projectId: 'singspeaktech',
     storageBucket: 'singspeaktech.firebasestorage.app',
+    androidClientId: '640237132976-aosufii07c2em2i0rpvj36kj1bcoq9mf.apps.googleusercontent.com',
+    iosClientId: '640237132976-sckd44re7j1anabsdi65781m2vnucjb1.apps.googleusercontent.com',
     iosBundleId: 'com.example.singSpeakTech',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
     apiKey: 'AIzaSyCRZUCWDC1rOZv6jK9gN0yu2Ig3GfmFTzs',
-    appId: '1:640237132976:web:a7a14a922772aec83cef75',
+    appId: '1:640237132976:web:6315e67355a302be3cef75',
     messagingSenderId: '640237132976',
     projectId: 'singspeaktech',
     authDomain: 'singspeaktech.firebaseapp.com',
     storageBucket: 'singspeaktech.firebasestorage.app',
-    measurementId: 'G-9FXXYBBQR4',
+    measurementId: 'G-7EX3HBRJFH',
   );
+
 }

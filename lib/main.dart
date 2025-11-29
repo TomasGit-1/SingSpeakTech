@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:sing_speak_tech/home/home.dart';
-import 'package:sing_speak_tech/login/loginV.dart';
+import 'package:sing_speak_tech/login/login_view.dart';
 import 'firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
   User? user = FirebaseAuth.instance.currentUser;
-
   runApp(MyApp(user));
 }
 
