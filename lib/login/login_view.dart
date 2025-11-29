@@ -57,7 +57,7 @@ class _LoginPageState extends State<LoginPage> {
                   // ---------- LOGO ARRIBA ----------
                   const SizedBox(height: 100),
                   const Text(
-                    "Aprende LSM fácilmente",
+                    "Aprende LSM",
                     style: TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,

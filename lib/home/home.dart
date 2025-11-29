@@ -78,11 +78,13 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
     return Scaffold(
+      backgroundColor: Color(0xFF0D1B2A),
       appBar: AppBar(
-        title: const Text("Home"),
+        title: const Text("Home", style: TextStyle(color: Colors.white),),
+        backgroundColor: Color(0xFF0D1B2A),
         actions: [
           IconButton(
-            icon: const Icon(Icons.logout),
+            icon: const Icon(Icons.logout,color: Colors.white),
             onPressed: () async {
               await FirebaseAuth.instance.signOut();
               Navigator.pushReplacementNamed(context, "/login");
