@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sing_speak_tech/controller/download_firebase.dart';
-import 'package:sing_speak_tech/home/menu_home.dart';
 import 'package:sing_speak_tech/views/abc_view.dart';
 
 class HomePage extends StatefulWidget {
@@ -85,10 +84,15 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+
+
     return Scaffold(
       backgroundColor: const Color(0xFF0D1B2A),
       appBar: AppBar(
-        title: const Text("Home", style: TextStyle(color: Colors.white)),
+        title: Text(
+          "LSM",
+          style: const TextStyle(color: Colors.white),
+        ),
         backgroundColor: const Color(0xFF0D1B2A),
         actions: [
           IconButton(
@@ -138,6 +142,7 @@ class _HomePageState extends State<HomePage> {
               BottomNavigationBarItem(icon: Icon(Icons.school, size: 30), label: "Aprender"),
               BottomNavigationBarItem(icon: Icon(Icons.play_circle_fill, size: 30), label: "Juegos"),
               BottomNavigationBarItem(icon: Icon(Icons.download, size: 30), label: "Descargar"),
+              BottomNavigationBarItem(icon: Icon(Icons.people, size: 30), label: "Perfil"),
             ],
           ),
         ),
@@ -145,10 +150,10 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // -------------------------------
-  //   CONTROLADOR DE VISTAS
-  // -------------------------------
+
   Widget _getPage() {
+    final user = FirebaseAuth.instance.currentUser;
+    final name = user?.displayName ?? 'Usuario';
     switch (index) {
       case 0:
         return  _placeholderView("Home");
@@ -156,9 +161,10 @@ class _HomePageState extends State<HomePage> {
         return const AbecedarioPage();
       case 2:
         return _placeholderView("Juegos");
-
       case 3:
         return _buildDownloadView();
+      case 4:
+        return _placeholderView(name);
     }
     return Container();
   }
