@@ -68,67 +68,7 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(height: 10),
                   Image.asset("assets/mano3d.png", height: 180),
 
-                  // ---------- EMPUJAR TODO HACIA ABAJO ----------
-                  const Spacer(),
-
-                  // ---------- TEXTFIELDS ----------
-                  TextFieldDesign(
-                    controller: emailCtrl,
-                    hint: "Correo electrónico",
-                    icon: Icons.mail_outline,
-                  ),
-
-                  const SizedBox(height: 12),
-
-                  TextFieldDesign(
-                    controller: passCtrl,
-                    hint: "Contraseña",
-                    icon: Icons.lock_outline,
-                    obscure: true,
-                  ),
-
-                  const SizedBox(height: 14),
-
-                  Text(
-                    "¿Olvidaste tu contraseña?",
-                    style: TextStyle(
-                      color: const Color(0xFFE6E8EA),
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-
-                  const SizedBox(height: 18),
-
-                  // ---------- ERROR ----------
-                  if (error != null)
-                    Text(error!, style: const TextStyle(color: Colors.red)),
-
-                  const SizedBox(height: 10),
-
-                  // ---------- BOTÓN LOGIN ----------
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: login,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFF98A76),
-                        padding: const EdgeInsets.symmetric(vertical: 18),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(18),
-                        ),
-                        foregroundColor: const Color(0xFF02121F),
-                        textStyle: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      child: const Text("Iniciar sesión"),
-                    ),
-                  ),
-
-                  const SizedBox(height: 12),
-
-                  // ---------- BOTÓN GOOGLE ----------
+                  Spacer(),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
@@ -157,8 +97,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                   ),
-
-                  const SizedBox(height: 40), // MARGEN FINAL
+                  const SizedBox(height: 150), // MARGEN FINAL
                 ],
               ),
             ),

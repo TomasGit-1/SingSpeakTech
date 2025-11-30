@@ -37,9 +37,6 @@ class _AbecedarioPageState extends State<AbecedarioPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFF0D1B2A),
-      appBar: AppBar(
-        title: const Text("Abecedario"),
-      ),
       body: loading
           ? const Center(child: CircularProgressIndicator())
           : GridView.builder(
