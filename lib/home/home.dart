@@ -17,6 +17,7 @@ class _HomePageState extends State<HomePage> {
   int current = 0;
   int total = 1;
   bool downloaded = false;
+  int index = 0;
 
   @override
   void initState() {
@@ -32,6 +33,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _startDownload() async {
+    if (isDownloading) return; // evita descargas duplicadas
+
     setState(() {
       isDownloading = true;
       current = 0;
@@ -49,11 +52,17 @@ class _HomePageState extends State<HomePage> {
       },
     );
 
-    await _checkIfDownloaded(); 
-    
+    await _checkIfDownloaded();
+
     setState(() {
       isDownloading = false;
     });
+
+    _showDownloadSnackBar(); 
+  }
+
+  void _showDownloadSnackBar() {
+    if (!mounted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -76,15 +85,14 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser;
     return Scaffold(
-      backgroundColor: Color(0xFF0D1B2A),
+      backgroundColor: const Color(0xFF0D1B2A),
       appBar: AppBar(
-        title: const Text("Home", style: TextStyle(color: Colors.white),),
-        backgroundColor: Color(0xFF0D1B2A),
+        title: const Text("Home", style: TextStyle(color: Colors.white)),
+        backgroundColor: const Color(0xFF0D1B2A),
         actions: [
           IconButton(
-            icon: const Icon(Icons.logout,color: Colors.white),
+            icon: const Icon(Icons.logout, color: Colors.white),
             onPressed: () async {
               await FirebaseAuth.instance.signOut();
               Navigator.pushReplacementNamed(context, "/login");
@@ -93,42 +101,112 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
 
-      body: Column(
-        children: [
-          Expanded(
-            child: MenuHome(
-              downloaded: downloaded,
-              onDownloadTap: _startDownload,
-              onAbecedarioTap: () {
-                 Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const AbecedarioPage()),
-                  );
-              },
-              onNumerosTap: () {},
-              onColoresTap: () {},
-            ),
+      body: _getPage(),
+
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(50),
+          child: BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
+            backgroundColor: const Color(0xFFF98A76),
+            elevation: 100,
+            selectedItemColor: const Color(0xFF0D1B2A),
+            unselectedItemColor: Colors.white,
+
+            showSelectedLabels: true,    
+            showUnselectedLabels: false,
+            selectedFontSize: 12,
+            unselectedFontSize: 0,
+
+            currentIndex: index,
+            onTap: (i) {
+              if (i == 3) {
+                if (!downloaded) {
+                  setState(() => index = i);
+                  _startDownload();
+                } else {
+                  _showDownloadSnackBar();
+                }
+              } else {
+                setState(() => index = i);
+              }
+            },
+
+            items: const [
+              BottomNavigationBarItem(icon: Icon(Icons.home, size: 30), label: "Home"),
+              BottomNavigationBarItem(icon: Icon(Icons.school, size: 30), label: "Aprender"),
+              BottomNavigationBarItem(icon: Icon(Icons.play_circle_fill, size: 30), label: "Juegos"),
+              BottomNavigationBarItem(icon: Icon(Icons.download, size: 30), label: "Descargar"),
+            ],
           ),
-          if (isDownloading && !downloaded) ...[
-            const SizedBox(height: 30),
+        ),
+      ),
+    );
+  }
+
+  // -------------------------------
+  //   CONTROLADOR DE VISTAS
+  // -------------------------------
+  Widget _getPage() {
+    switch (index) {
+      case 0:
+        return  _placeholderView("Home");
+      case 1:
+        return const AbecedarioPage();
+      case 2:
+        return _placeholderView("Juegos");
+
+      case 3:
+        return _buildDownloadView();
+    }
+    return Container();
+  }
+
+
+  Widget _buildDownloadView() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (isDownloading) ...[
+            const Icon(Icons.downloading, size: 90, color: Colors.white),
+            const SizedBox(height: 20),
+            const Text(
+              "Descargando contenido...",
+              style: TextStyle(color: Colors.white, fontSize: 24),
+            ),
+            const SizedBox(height: 20),
+
             SizedBox(
-              width: 250,
+              width: 260,
               child: LinearProgressIndicator(
-                value:
-                    (current > 0 && total > 0)
-                        ? (current / total).clamp(0.0, 1.0)
-                        : 0.0,
+                value: total > 0 ? (current / total).clamp(0.0, 1.0) : 0.0,
                 minHeight: 6,
               ),
             ),
             const SizedBox(height: 10),
+
             Text(
               "${((current / total) * 100).clamp(0.0, 100).toStringAsFixed(0)}%",
-              style: const TextStyle(fontSize: 16),
+              style: const TextStyle(color: Colors.white, fontSize: 20),
             ),
-            const SizedBox(height:30)
-            ],
+          ],
+
+          if (!isDownloading && downloaded)
+            const Text(
+              "Contenido descargado ✔",
+              style: TextStyle(color: Colors.greenAccent, fontSize: 22),
+            ),
         ],
+      ),
+    );
+  }
+  Widget _placeholderView(String title) {
+    return Center(
+      child: Text(
+        title,
+        style: const TextStyle(color: Colors.white, fontSize: 30),
       ),
     );
   }

@@ -36,6 +36,7 @@ class _AbecedarioPageState extends State<AbecedarioPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFF0D1B2A),
       appBar: AppBar(
         title: const Text("Abecedario"),
       ),
