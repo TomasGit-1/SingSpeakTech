@@ -41,7 +41,6 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       body: Stack(
         children: [
-          // FONDO SVG
           SvgPicture.asset(
             'assets/login/opcion1.svg',
             width: double.infinity,
@@ -65,8 +64,8 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
 
-                  const SizedBox(height: 10),
-                  Image.asset("assets/mano3d.png", height: 180),
+                  const SizedBox(height: 20),
+                  Image.asset("assets/login/mano3d.png", height: 300),
 
                   Spacer(),
                   SizedBox(
@@ -90,7 +89,7 @@ class _LoginPageState extends State<LoginPage> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Image.asset("assets/GoogleIcon.png", height: 32),
+                          Image.asset("assets/login/GoogleIcon.png", height: 32),
                           const SizedBox(width: 10),
                           const Text("Continuar con Google"),
                         ],

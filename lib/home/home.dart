@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sing_speak_tech/controller/download_firebase.dart';
-import 'package:sing_speak_tech/views/abc_view.dart';
+import 'package:sing_speak_tech/home/menu_home.dart';
+import 'package:sing_speak_tech/controller/resource_downloader.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -27,22 +27,52 @@ class _HomePageState extends State<HomePage> {
   Future<void> _checkIfDownloaded() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      downloaded = prefs.getBool("abecedario_downloaded") ?? false;
+      downloaded = prefs.getBool("lsm_resources_downloaded") ?? false;
     });
   }
 
   Future<void> _startDownload() async {
-    if (isDownloading) return; // evita descargas duplicadas
-
+    if (isDownloading) return;
+    
     setState(() {
       isDownloading = true;
       current = 0;
       total = 1;
     });
 
-    total = await ImageDownloader.getTotalFiles();
+    // 🔥 1. Obtener tamaño total en bytes
+    final bytes = await ResourceDownloader.getTotalBytes();
+    final mb = (bytes / (1024 * 1024)).toStringAsFixed(2);
 
-    await ImageDownloader.downloadAllImagesOnce(
+    // ScaffoldMessenger.of(context).showSnackBar(
+    //   SnackBar(
+    //     content: Text("Se descargarán aproximadamente $mb MB"),
+    //     duration: const Duration(seconds: 3),
+    //   ),
+    // );
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        behavior: SnackBarBehavior.floating,
+        elevation: 10,
+        margin: const EdgeInsets.only(bottom: 20, left: 20, right: 20),
+        backgroundColor: Colors.black.withOpacity(0.85),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        content:  Row(
+          children: [
+            SizedBox(width: 12),
+            Text("Se descargarán aproximadamente $mb MB", style: TextStyle(fontSize: 16)),
+          ],
+        ),
+        duration: Duration(seconds: 3),
+      ),
+    );
+
+    // 🔥 2. Número de archivos para el progreso
+    total = await ResourceDownloader.getTotalFiles();
+
+    // 🔥 3. Descargar realmente
+    await ResourceDownloader.downloadAllResources(
       onProgress: (c, t) {
         setState(() {
           current = c;
@@ -57,7 +87,7 @@ class _HomePageState extends State<HomePage> {
       isDownloading = false;
     });
 
-    _showDownloadSnackBar(); 
+    _showDownloadSnackBar();
   }
 
   void _showDownloadSnackBar() {
@@ -66,8 +96,8 @@ class _HomePageState extends State<HomePage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         behavior: SnackBarBehavior.floating,
-        margin: const EdgeInsets.only(bottom: 20, left: 20, right: 20),
         elevation: 10,
+        margin: const EdgeInsets.only(bottom: 20, left: 20, right: 20),
         backgroundColor: Colors.black.withOpacity(0.85),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         content: const Row(
@@ -82,17 +112,50 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  List<BottomNavigationBarItem> _navItems(bool downloaded) {
+    if (!downloaded) {
+      return const [
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home, size: 30),
+          label: "Home",
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.download, size: 30),
+          label: "Descargar",
+        ),
+      ];
+    }
+
+    return const [
+      BottomNavigationBarItem(
+        icon: Icon(Icons.home, size: 30),
+        label: "Home",
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.school, size: 30),
+        label: "Aprender",
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.play_circle_fill, size: 30),
+        label: "Juegos",
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.download, size: 30),
+        label: "Descargar",
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.people, size: 30),
+        label: "Perfil",
+      ),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
-
-
     return Scaffold(
       backgroundColor: const Color(0xFF0D1B2A),
       appBar: AppBar(
-        title: Text(
-          "LSM",
-          style: const TextStyle(color: Colors.white),
-        ),
+        title: const Text("LSM", style: TextStyle(color: Colors.white)),
         backgroundColor: const Color(0xFF0D1B2A),
         actions: [
           IconButton(
@@ -108,7 +171,7 @@ class _HomePageState extends State<HomePage> {
       body: _getPage(),
 
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 35),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(50),
           child: BottomNavigationBar(
@@ -117,58 +180,53 @@ class _HomePageState extends State<HomePage> {
             elevation: 100,
             selectedItemColor: const Color(0xFF0D1B2A),
             unselectedItemColor: Colors.white,
-
-            showSelectedLabels: true,    
+            showSelectedLabels: true,
             showUnselectedLabels: false,
             selectedFontSize: 12,
             unselectedFontSize: 0,
 
             currentIndex: index,
-            onTap: (i) {
-              if (i == 3) {
-                if (!downloaded) {
+            items: _navItems(downloaded),
+
+            onTap: (i) async {
+              // Antes de descargar → solo Home y Descargar funcionan
+              if (!downloaded) {
+                if (i == 1) {
                   setState(() => index = i);
                   _startDownload();
                 } else {
-                  _showDownloadSnackBar();
+                  setState(() => index = 1);
                 }
-              } else {
-                setState(() => index = i);
+                return;
               }
-            },
 
-            items: const [
-              BottomNavigationBarItem(icon: Icon(Icons.home, size: 30), label: "Home"),
-              BottomNavigationBarItem(icon: Icon(Icons.school, size: 30), label: "Aprender"),
-              BottomNavigationBarItem(icon: Icon(Icons.play_circle_fill, size: 30), label: "Juegos"),
-              BottomNavigationBarItem(icon: Icon(Icons.download, size: 30), label: "Descargar"),
-              BottomNavigationBarItem(icon: Icon(Icons.people, size: 30), label: "Perfil"),
-            ],
+              // Después → App normal
+              setState(() => index = i);
+            },
           ),
         ),
       ),
     );
   }
 
-
   Widget _getPage() {
+    if (!downloaded) {
+      return _buildDownloadView();
+    }
+
     final user = FirebaseAuth.instance.currentUser;
     final name = user?.displayName ?? 'Usuario';
+
     switch (index) {
-      case 0:
-        return  _placeholderView("Home");
-      case 1:
-        return const AbecedarioPage();
-      case 2:
-        return _placeholderView("Juegos");
-      case 3:
-        return _buildDownloadView();
-      case 4:
-        return _placeholderView(name);
+      case 0: return const HomeMenu();
+      case 1: return _placeholderView("Aprender");
+      case 2: return _placeholderView("Juegos");
+      case 3: return _buildDownloadView();
+      case 4: return _placeholderView(name);
     }
+
     return Container();
   }
-
 
   Widget _buildDownloadView() {
     return Center(
@@ -178,10 +236,8 @@ class _HomePageState extends State<HomePage> {
           if (isDownloading) ...[
             const Icon(Icons.downloading, size: 90, color: Colors.white),
             const SizedBox(height: 20),
-            const Text(
-              "Descargando contenido...",
-              style: TextStyle(color: Colors.white, fontSize: 24),
-            ),
+            const Text("Descargando contenido...",
+                style: TextStyle(color: Colors.white, fontSize: 24)),
             const SizedBox(height: 20),
 
             SizedBox(
@@ -200,14 +256,13 @@ class _HomePageState extends State<HomePage> {
           ],
 
           if (!isDownloading && downloaded)
-            const Text(
-              "Contenido descargado ✔",
-              style: TextStyle(color: Colors.greenAccent, fontSize: 22),
-            ),
+            const Text("Contenido descargado ✔",
+                style: TextStyle(color: Colors.white, fontSize: 22)),
         ],
       ),
     );
   }
+
   Widget _placeholderView(String title) {
     return Center(
       child: Text(

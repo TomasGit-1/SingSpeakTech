@@ -1,21 +1,23 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:sing_speak_tech/views/detect_photo_page.dart';
+import 'package:sing_speak_tech/controller/resource_downloader.dart';
+import 'package:sing_speak_tech/views/abc_view.dart';
 
-class MenuHome extends StatelessWidget {
-  final bool downloaded;
-  final VoidCallback onDownloadTap;
-  final VoidCallback onAbecedarioTap;
-  final VoidCallback onNumerosTap;
-  final VoidCallback onColoresTap;
+class HomeMenu extends StatelessWidget {
+  const HomeMenu({super.key});
 
-  const MenuHome({
-    super.key,
-    required this.downloaded,
-    required this.onDownloadTap,
-    required this.onAbecedarioTap,
-    required this.onNumerosTap,
-    required this.onColoresTap,
-  });
+  Future<File?> _loadLocalIcon(String folder, String fileName) async {
+    final file = await ResourceDownloader.getLocalFile(folder, fileName);
+
+    print("🔍 Buscando icono: $folder/$fileName");
+    if (file != null) {
+      print("✅ Icono encontrado");
+      return file;
+    }
+
+    print("❌ Icono NO encontrado");
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,107 +25,102 @@ class MenuHome extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       child: GridView.count(
         crossAxisCount: 2,
-        crossAxisSpacing: 16,
-        mainAxisSpacing: 16,
-        childAspectRatio: 3 / 2,
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
+        childAspectRatio: 1 / 1.2,
         children: [
-          _MenuTile(
-            icon: Icons.sort_by_alpha,
-            label: "Abecedario",
-            color: const Color(0xFFFFF2C9),
-            enabled: downloaded,
-            onTap: downloaded ? onAbecedarioTap : null,
-          ),
-          _MenuTile(
-            icon: Icons.looks_one,
-            label: "Números",
-            color: const Color(0xFFE0F7FA),
-            enabled: downloaded,
-            onTap: downloaded ? onNumerosTap : null,
-          ),
-          _MenuTile(
-            icon: Icons.palette,
-            label: "Colores",
-            color: const Color(0xFFEDE7F6),
-            enabled: downloaded,
-            onTap: downloaded ? onColoresTap : null,
-          ),
-          _MenuTile(
-            icon: Icons.download,
-            label: "Descargar\ncontenido",
-            color: const Color(0xFFFFE0E0),
-            enabled: true,
-            onTap: onDownloadTap,
-          ),
-
-          _MenuTile(
-            icon: Icons.camera_alt,
-            label: "Abrir Cámara (YOLO)",
-            color: const Color(0xFFD1FFC6),
-            enabled: true,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const CameraPhotoYoloView()),
+          FutureBuilder<File?>(
+            future: _loadLocalIcon("resources", "abecedario_icono.png"),
+            builder: (context, snapshot) {
+              return _MenuTile(
+                localIcon: snapshot.data,
+                label: "Abecedario",
+                color: Color(0xFFFFFFFF),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const AbecedarioPage()),
+                  );
+                },
               );
             },
           ),
+
+          FutureBuilder<File?>(
+            future: _loadLocalIcon("resources", "numeros_icono.png"),
+            builder: (context, snapshot) {
+              return _MenuTile(
+                localIcon: snapshot.data,
+                label: "Números",
+                color: Color(0xFFFFFFFF),
+                onTap: () {},
+              );
+            },
+          ),
+
+          FutureBuilder<File?>(
+            future: _loadLocalIcon("resources", "colores_icono.png"),
+            builder: (context, snapshot) {
+              return _MenuTile(
+                localIcon: snapshot.data,
+                label: "Colores",
+                color: Color.fromARGB(255, 255, 255, 255),
+                onTap: () {},
+              );
+            },
+          ),
+
         ],
       ),
     );
   }
 }
 
+
 class _MenuTile extends StatelessWidget {
-  final IconData icon;
   final String label;
   final Color color;
-  final VoidCallback? onTap;
-  final bool enabled;
+  final VoidCallback onTap;
+  final File? localIcon;
 
   const _MenuTile({
-    required this.icon,
+    super.key,
     required this.label,
     required this.color,
     required this.onTap,
-    required this.enabled,
+    required this.localIcon,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Opacity(
-      opacity: enabled ? 1.0 : 0.4, // se ve gris si está deshabilitado
-      child: InkWell(
-        borderRadius: BorderRadius.circular(18),
-        onTap: enabled ? onTap : null, // deshabilita el tap
-        child: Container(
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(18),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 6,
-                offset: const Offset(0, 3),
+    return InkWell(
+      borderRadius: BorderRadius.circular(18),
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(18),
+        ),
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          children: [
+            Expanded(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: localIcon != null
+                  ? Image.file(localIcon!, fit: BoxFit.cover)
+                  : const Icon(Icons.image, size: 70, color: Colors.black54),
               ),
-            ],
-          ),
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 40, color: Colors.black87),
-              const SizedBox(height: 10),
-              Text(
-                label,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              label,
+              style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

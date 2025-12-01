@@ -16,16 +16,36 @@ class _AbecedarioPageState extends State<AbecedarioPage> {
   @override
   void initState() {
     super.initState();
-    _loadImages();
+    _loadAbecedarioImages();
   }
 
-  Future<void> _loadImages() async {
+  Future<void> _loadAbecedarioImages() async {
     final dir = await getApplicationDocumentsDirectory();
-    final files = Directory(dir.path)
-        .listSync()
-        .where((f) => f.path.endsWith(".png") || f.path.endsWith(".jpg"))
-        .map((f) => File(f.path))
-        .toList();
+
+    final abcDir = Directory("${dir.path}/abecedario");
+
+    print("📁 Buscando imágenes en: ${abcDir.path}");
+
+    if (!await abcDir.exists()) {
+      print("❌ No existe la carpeta abecedario");
+      setState(() => loading = false);
+      return;
+    }
+
+    final files =
+        abcDir
+            .listSync()
+            .where(
+              (f) =>
+                  f.path.endsWith(".png") ||
+                  f.path.endsWith(".jpg") ||
+                  f.path.endsWith(".jpeg"),
+            )
+            .map((f) => File(f.path))
+            .toList();
+
+    // Ordenar por nombre
+    files.sort((a, b) => a.path.compareTo(b.path));
 
     setState(() {
       images = files;
@@ -36,57 +56,81 @@ class _AbecedarioPageState extends State<AbecedarioPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF0D1B2A),
-      body: loading
-          ? const Center(child: CircularProgressIndicator())
-          : GridView.builder(
-              padding: const EdgeInsets.all(16),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-              ),
-              itemCount: images.length,
-              itemBuilder: (context, index) {
-                final img = images[index];
-                final name = img.path.split("/").last.split(".").first;
+      backgroundColor: const Color(0xFF0D1B2A),
+      appBar: AppBar(
+        title: const Text("LSM", style: TextStyle(color: Colors.white)),
+        backgroundColor: const Color(0xFF0D1B2A),
+        iconTheme: const IconThemeData(
+          color: Colors.white, 
+          size: 28, 
+        ),
+      ),
 
-                return Container(
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFFF2C9),
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        blurRadius: 6,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  padding: const EdgeInsets.all(8),
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Image.file(
-                            img,
-                            fit: BoxFit.cover,
+      body:
+          loading
+              ? const Center(
+                child: CircularProgressIndicator(color: Colors.white),
+              )
+              : images.isEmpty
+              ? const Center(
+                child: Text(
+                  "No hay imágenes descargadas",
+                  style: TextStyle(color: Colors.white, fontSize: 18),
+                ),
+              )
+              : GridView.builder(
+                padding: const EdgeInsets.all(16),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                  childAspectRatio: 1 / 1.2,
+                ),
+                itemCount: images.length,
+                itemBuilder: (context, index) {
+                  final img = images[index];
+                  // Extraer nombre limpio
+                  String name = img.path.split("/").last.split(".").first;
+
+                  if (name.startsWith("abecedario_")) {
+                    name = name.replaceFirst("abecedario_", "");
+                  }
+
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: Color(0xFFFFFFFF),
+                      borderRadius: BorderRadius.circular(18),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.10),
+                          blurRadius: 10,
+                          offset: Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    padding: const EdgeInsets.all(10),
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(14),
+                            child: Image.file(img, fit: BoxFit.cover),
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 5),
-                      Text(
-                        name.toUpperCase(),
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
+                        const SizedBox(height: 6),
+                        Text(
+                          name.toUpperCase(),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color(0xFF0D1B2A),
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
+                      ],
+                    ),
+                  );
+                },
+              ),
     );
   }
 }

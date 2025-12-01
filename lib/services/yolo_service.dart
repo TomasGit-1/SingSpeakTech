@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:sing_speak_tech/controller/resource_downloader.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:image/image.dart' as img;
 import 'package:camera/camera.dart';
@@ -10,8 +11,11 @@ class YoloService {
   late int inputHeight;
 
   Future<void> loadModel() async {
+    final modelPath = await ResourceDownloader.getLocalFile("Models", "best_float16.tflite");
+    
+    String modelFile = File(modelPath as String) as String;
     interpreter = await Interpreter.fromAsset(
-      'assets/models/best_float16.tflite',
+      modelFile,
       options: InterpreterOptions()..threads = 4,
     );
 
